@@ -1,4 +1,4 @@
-# ERIS - Chaos Engineering Platform
+# ERIS - Chaos Lab
 
 A chaos engineering platform for testing system resilience through controlled failure injection.
 
