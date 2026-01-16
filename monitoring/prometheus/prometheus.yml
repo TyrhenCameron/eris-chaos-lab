@@ -1,0 +1,24 @@
+# how often to scrape metrics from services
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# list of services to scrape
+scrape_configs:
+# Prometheus monitor
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+# ERIS microservices
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:8000']
+  - job_name: 'search-service'
+    static_configs:
+      - targets: ['search-service:8001']
+  - job_name: 'product-service'
+    static_configs:
+      - targets: ['product-service:8002']
+  - job_name: 'ranking-service'
+    static_configs:
+      - targets: ['ranking-service:8003']
