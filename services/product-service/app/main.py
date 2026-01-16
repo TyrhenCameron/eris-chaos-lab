@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from prometheus_client import Counter, Histogram, generate_latest
-from fastapi.respones import PlainTextResponse
+from fastapi.responses import PlainTextResponse
 import asyncpg
 import redis
 import json
@@ -48,10 +48,10 @@ async def startup():
                         )
                         ''')
 
-        count = await. conn.fetchval('SELECT COUNT(*) FROM products')
+        count = await conn.fetchval('SELECT COUNT(*) FROM products')
         if count == 0:
             await conn.executemany('''
-                                INSERT INTO products (name, description, price category)
+                                INSERT INTO products (name, description, price, category)
                                 VALUES ($1, $2, $3, $4)
                                 ''', [
                                     ('Laptop Pro 15', 'High-performance laptop', 1299.99, 'electronics'),
@@ -84,7 +84,7 @@ async def metrics():
     return generate_latest()
 
 # search products
-@app.gret("/products/search")
+@app.get("/products/search")
 async def search_products(q: str):
     """
     Search from products matching query.
