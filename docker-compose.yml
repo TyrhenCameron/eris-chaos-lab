@@ -28,5 +28,46 @@ services:
       timeout: 5s
       retries: 5
 
+  # API gateway
+  api-gateway:
+    build: ./services/api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - search-service
+    environment:
+      - SEARCH_SERVICE_URL=http://search-service:8001
+
+# search service - search query orcehstrator
+  search-service:
+    build: ./services/search-service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - product-service
+      - ranking-service
+    environment:
+      - PRODUCT_SERVICE_URL=http://product-service:8002
+      - RANKING_SERVICE_URL=http://ranking-service:8003
+
+# product service - product data and caching
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://REDACTED:REDACTED@postgres:5432/products
+      - REDIS_URL=redis://redis:6379
+
+  ranking-service:
+    build: ./services/ranking-service
+    ports:
+      - "8003:8003"
+
 volumes:
     postgres_data:
