@@ -92,5 +92,16 @@ services:
     depends_on:
       - prometheus
 
+  # Chaos control
+  chaos-controller:
+    build: ./services/chaos-controller
+    ports:
+      - "8080:8080"
+    volumes:
+      # mounting docker socket to control other containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - api-gateway
+
 volumes:
     postgres_data:
