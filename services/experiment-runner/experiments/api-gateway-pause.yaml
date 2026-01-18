@@ -1,0 +1,17 @@
+name: api-gateway-pause-test
+description: Test system when API gateway is paused
+hypothesis: System should recover to steady state within 30 seconds after chaos ends
+
+steady_state:
+  max_error_rate: 0.01
+  max_latency_p95: 0.5
+
+abort_conditions:
+  max_error_rate: 0.8
+  max_latency_p95: 10.0
+
+chaos:
+  target_service: api-gateway
+  experiment_type: container_pause
+  duration_seconds: 15
+  intensity: 50
