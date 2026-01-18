@@ -103,5 +103,13 @@ services:
     depends_on:
       - api-gateway
 
+  #load generator
+  load-generator:
+    build: ./services/load-generator
+    ports:
+      - "8085:8085"
+    depends_on:
+      - api-gateway
+
 volumes:
     postgres_data:
