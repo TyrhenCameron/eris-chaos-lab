@@ -21,6 +21,7 @@ Four microservices that handle product search:
 The chaos tools:
 - **chaos-controller** (8080) - injects failures into services
 - **load-generator** (8085) - sends continuous traffic for testing
+- **experiment-runner** (8090) - automated chaos experiments with hypothesis testing
 - **prometheus** (9090) - collects metrics
 - **grafana** (3000) - visualizes everything
 
@@ -59,6 +60,34 @@ curl -X POST http://localhost:8080/experiment \
 ```
 
 Watch the dashboard at http://localhost:3000 (see .env) - you'll see the error rate spike when the service is paused.
+
+## Automated experiments
+
+The experiment-runner automates chaos using the scientific method:
+
+1. Check steady state before chaos
+2. Inject failure
+3. Monitor for abort conditions (safety)
+4. Validate system recovers after chaos
+5. Generate pass/fail report
+
+Run a pre-defined experiment:
+```bash
+curl -X POST http://localhost:8090/run/api-gateway-pause
+```
+
+Example output:
+```json
+{
+  "status": "passed",
+  "hypothesis": "System should recover to steady state within 30 seconds",
+  "steady_state_before": {"error_rate": 0.0, "latency_p95": 0.048},
+  "steady_state_after": {"error_rate": 0.0, "latency_p95": 0.048},
+  "summary": "Hypothesis validated: system recovered to steady state after chaos"
+}
+```
+
+Experiments are defined in YAML files in `services/experiment-runner/experiments/`.
 
 ## Experiment types
 
