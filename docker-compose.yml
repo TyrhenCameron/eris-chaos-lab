@@ -111,5 +111,16 @@ services:
     depends_on:
       - api-gateway
 
+  #experiment runner - automated chaos
+  experiment-runner:
+    build: ./services/experiment-runner
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./services/experiment-runner/experiments:/app/experiments
+    depends_on:
+      - chaos-controller
+      - prometheus
+
 volumes:
     postgres_data:
