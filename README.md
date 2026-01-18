@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" width="150">
+</p>
+
 # ERIS
 
 Chaos engineering platform I built to learn about distributed systems resilience. Named after the Greek goddess of chaos.
