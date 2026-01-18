@@ -50,7 +50,7 @@ async def health():
     return {
         "status" : "healthy",
         "service" : "load-generator",
-        "load_test_running" : "load_test_running"
+        "load_test_running" : load_test_running
     }
 
 @app.get("/metrics", response_class=PlainTextResponse)
@@ -74,8 +74,8 @@ async def generate_load(config: LoadConfig):
         while load_test_running:
             if config.duration_seconds:
                 elapsed = (datetime.now() - start_time).total_seconds()
-                if elapsed >= config.duration_seconds
-                break
+                if elapsed >= config.duration_seconds:
+                    break
 
             #calculate delay
             delay = 1.0 / config.requests_per_second
@@ -105,58 +105,58 @@ async def generate_load(config: LoadConfig):
         load_test_running = False
         CURRENT_RPS.set(0)
 
-        # start load test
-        @app.post("/start")
-        async def start_load_test(config: LoadConfig = None):
-            global load_test_running, load_test_task, current_config
+# start load test
+@app.post("/start")
+async def start_load_test(config: LoadConfig = None):
+    global load_test_running, load_test_task, current_config
 
-            # dont start if already running
-            if load_test_running:
-                return {"status": "already running", "config": current_config}
+    # dont start if already running
+    if load_test_running:
+        return {"status": "already running", "config": current_config}
 
-            # use provided config or default
-            if config:
-                current_config = config
+    # use provided config or default
+    if config:
+        current_config = config
 
-            # start function in background with asyncio
-            load_test_task = asyncio.create_task(generate_load(current_config))
+    # start function in background with asyncio
+    load_test_task = asyncio.create_task(generate_load(current_config))
 
-            # return started with config details
-            return {
-                "status": "started",
-                "config": {
-                    "target_url": current_config.target_url,
-                    "requests_per_second": current_config.requests_per_second,
-                    "duration_seconds": current_config.duration_seconds
-                }
-            }
+    # return started with config details
+    return {
+        "status": "started",
+        "config": {
+            "target_url": current_config.target_url,
+            "requests_per_second": current_config.requests_per_second,
+            "duration_seconds": current_config.duration_seconds
+        }
+    }
 
-        # stop load test
-        @app.post("/stop")
-        async def stop_load_test():
-            global load_test_running, load_test_task
+# stop load test
+@app.post("/stop")
+async def stop_load_test():
+    global load_test_running, load_test_task
 
-            # if not running then return so
-            if not load_test_running:
-                return {"status": "not running"}
-            # signal loop to stop
-            load_test_running = False
+    # if not running then return so
+    if not load_test_running:
+        return {"status": "not running"}
+    # signal loop to stop
+    load_test_running = False
 
-            #wait for task to finish cleanly
-            if load_test_task:
-                await load_test_task
+    #wait for task to finish cleanly
+    if load_test_task:
+        await load_test_task
 
-            #then return stopped status
-            return {"status": "stopped"}
+    #then return stopped status
+    return {"status": "stopped"}
 
-        # get current status
-        @app.get("/status")
-        async def get_status():
-            return {
-                "running": load_test_running,
-                "config": {
-                    "target_url": current_config.target_url,
-                    "requests_per_second": current_config.requests_per_second,
-                    "duration_seconds": current_config.duration_seconds
-                }
-            }
+# get current status
+@app.get("/status")
+async def get_status():
+    return {
+        "running": load_test_running,
+        "config": {
+            "target_url": current_config.target_url,
+            "requests_per_second": current_config.requests_per_second,
+            "duration_seconds": current_config.duration_seconds
+        }
+    }
