@@ -31,6 +31,15 @@ Test that search works:
 curl "http://localhost:8000/search?q=laptop"
 ```
 
+## Monitoring
+
+Open Grafana to watch metrics in real-time:
+- URL: http://localhost:3000
+- Login: admin / (see .env)
+- Dashboard: "ERIS Chaos Dashboard"
+
+Prometheus (raw metrics): http://localhost:9090
+
 ## Running chaos experiments
 
 Start some traffic first:
