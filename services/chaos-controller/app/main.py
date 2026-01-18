@@ -6,13 +6,13 @@ import docker
 import asyncio
 import httpx
 from datetime import datetime
-fromt prometheus_client import Counter, generate_latest
+from prometheus_client import Counter, generate_latest
 from fastapi.responses import PlainTextResponse
 
 app = FastAPI(title="ERIS Chaos Controller")
 
 # docker remote control - can list containers, stop them, pause, them, run commands inside them
-docker_client = docker.from_end()
+docker_client = docker.from_env()
 
 # prometheus and grafana metrics
 EXPERIMENTS_RUN = Counter(
@@ -100,7 +100,7 @@ async def run_experiment(request: ExperimentRequest):
             target_container.pause()
             await asyncio.sleep(request.duration_seconds) #regular time.sleep would freeze entire controller
             target_container.unpause()
-            result = f"Container paused for {request.duration_second}s"
+            result = f"Container paused for {request.duration_seconds}s"
 
         # eepyblackcat.jpg
         # slow network, geographic latency, congested network sim
@@ -111,7 +111,7 @@ async def run_experiment(request: ExperimentRequest):
             )
             await asyncio.sleep(request.duration_seconds)
             # clean it up after experiment ends
-            target_container.exec)run(
+            target_container.exec_run(
                 "tc qdisc del dev eth0 root"
             )
             result = f"Network delay of {request.intensity}ms for {request.duration_seconds}s"
@@ -166,7 +166,7 @@ async def recover_service(service_name: str):
     # all=True shows all docker containers
     containers = docker_client.containers.list(
         all=True,
-        filters="name": service_name}
+        filters= {"name": service_name}
     )
 
     if not containers:
