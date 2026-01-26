@@ -18,7 +18,7 @@ CACHE_HITS = Counter('product_cache_hits_total', 'Cache hits')
 CACHE_MISSES = Counter('product_cache_misses_total', 'Cache misses')
 
 # config
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://REDACTED:REDACTED@postgres:5432/products")
+DATABASE_URL = os.environ["DATABASE_URL"]  # Required - set in docker-compose.yml
 REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379")
 
 # DB connection pool

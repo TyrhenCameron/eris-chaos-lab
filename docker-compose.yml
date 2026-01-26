@@ -4,15 +4,15 @@ services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_USER: eris
-      POSTGRES_PASSWORD: REDACTED
-      POSTGRES_DB: products
+      POSTGRES_USER: ${POSTGRES_USER:-eris}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-products}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U eris -d products"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-eris} -d $${POSTGRES_DB:-products}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -61,7 +61,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://REDACTED:REDACTED@postgres:5432/products
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-eris}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-products}
       - REDIS_URL=redis://redis:6379
 
   ranking-service:
@@ -85,7 +85,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=REDACTED
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
     volumes:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards

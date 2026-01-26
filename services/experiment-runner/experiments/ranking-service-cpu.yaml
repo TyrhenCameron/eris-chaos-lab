@@ -1,0 +1,17 @@
+name: ranking-service-cpu-stress-test
+description: Test ranking service under CPU exhaustion (simulates compute bottleneck)
+hypothesis: System should degrade gracefully with increased latency but minimal errors
+
+steady_state:
+  max_error_rate: 0.01
+  max_latency_p95: 0.5
+
+abort_conditions:
+  max_error_rate: 0.3
+  max_latency_p95: 10.0
+
+chaos:
+  target_service: ranking-service
+  experiment_type: cpu_stress
+  duration_seconds: 25
+  intensity: 80

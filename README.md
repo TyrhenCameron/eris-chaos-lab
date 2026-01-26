@@ -27,6 +27,13 @@ The chaos tools:
 
 ## Running it
 
+First, copy the example environment file and set your credentials:
+```bash
+cp .env.example .env
+# Edit .env and set your passwords
+```
+
+Then start the services:
 ```bash
 docker-compose up -d --build
 ```
@@ -40,7 +47,7 @@ curl "http://localhost:8000/search?q=laptop"
 
 Open Grafana to watch metrics in real-time:
 - URL: http://localhost:3000
-- Login: admin / (see .env)
+- Login: admin / (password from your .env file)
 - Dashboard: "ERIS Chaos Dashboard"
 
 Prometheus (raw metrics): http://localhost:9090
@@ -59,7 +66,7 @@ curl -X POST http://localhost:8080/experiment \
   -d '{"target_service": "api-gateway", "experiment_type": "container_pause", "duration_seconds": 30}'
 ```
 
-Watch the dashboard at http://localhost:3000 (see .env) - you'll see the error rate spike when the service is paused.
+Watch the dashboard at http://localhost:3000 - you'll see the error rate spike when the service is paused.
 
 ## Automated experiments
 
@@ -71,9 +78,25 @@ The experiment-runner automates chaos using the scientific method:
 4. Validate system recovers after chaos
 5. Generate pass/fail report
 
-Run a pre-defined experiment:
+Available experiments:
 ```bash
+# List all experiments
+curl http://localhost:8090/experiments
+
+# API Gateway pause (service freeze)
 curl -X POST http://localhost:8090/run/api-gateway-pause
+
+# API Gateway kill (complete outage)
+curl -X POST http://localhost:8090/run/api-gateway-kill
+
+# Product service kill (database layer failure)
+curl -X POST http://localhost:8090/run/product-service-kill
+
+# Search service latency (network delay)
+curl -X POST http://localhost:8090/run/search-service-delay
+
+# Ranking service CPU stress
+curl -X POST http://localhost:8090/run/ranking-service-cpu
 ```
 
 Example output:

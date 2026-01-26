@@ -36,3 +36,6 @@ monitoring/grafana/data/
 # Temp files
 *.tmp
 *.bak
+
+# Demo script (local use only)
+demo.sh

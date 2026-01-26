@@ -1,0 +1,17 @@
+name: search-service-latency-test
+description: Test user experience when search orchestrator has network latency
+hypothesis: System should handle 500ms latency without cascading timeouts
+
+steady_state:
+  max_error_rate: 0.01
+  max_latency_p95: 0.5
+
+abort_conditions:
+  max_error_rate: 0.5
+  max_latency_p95: 8.0
+
+chaos:
+  target_service: search-service
+  experiment_type: network_delay
+  duration_seconds: 30
+  intensity: 500

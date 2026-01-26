@@ -1,0 +1,17 @@
+name: api-gateway-kill-test
+description: Test complete entry point failure (simulates instance termination)
+hypothesis: All requests fail during outage, system recovers fully after restart
+
+steady_state:
+  max_error_rate: 0.01
+  max_latency_p95: 0.5
+
+abort_conditions:
+  max_error_rate: 1.0
+  max_latency_p95: 30.0
+
+chaos:
+  target_service: api-gateway
+  experiment_type: container_kill
+  duration_seconds: 15
+  intensity: 100

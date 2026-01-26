@@ -1,0 +1,17 @@
+name: product-service-kill-test
+description: Test system resilience when database layer is completely unavailable
+hypothesis: System should return errors gracefully and recover within 60 seconds after service restart
+
+steady_state:
+  max_error_rate: 0.01
+  max_latency_p95: 0.5
+
+abort_conditions:
+  max_error_rate: 0.95
+  max_latency_p95: 15.0
+
+chaos:
+  target_service: product-service
+  experiment_type: container_kill
+  duration_seconds: 20
+  intensity: 100
